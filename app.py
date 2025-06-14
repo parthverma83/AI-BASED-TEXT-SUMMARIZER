@@ -11,7 +11,7 @@ def summarize():
      summary = ''
     if request.method == 'POST':
         input_text = request.form['input_text']
-        summary = summarize_text(input_text)
+        summary = summarize_text(input_text) # Assuming summarize_text is a function that summarizes the input text
     return render_template('index.html', summary=summary)
 
 if __name__ == '__main__':
