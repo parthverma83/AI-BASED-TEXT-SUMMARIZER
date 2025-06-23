@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up</title>
+</head>
+<body>
+    <h2>Sign Up</h2>
+    {% if error %}
+        <p style="color:red;">{{ error }}</p>
+    {% endif %}
+    {% if success %}
+        <p style="color:green;">{{ success }}</p>
+    {% endif %}
+    <form method="post">
+        Username: <input type="text" name="username" required><br>
+        Password: <input type="password" name="password" required><br>
+        <input type="submit" value="Sign Up">
+        <p>Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a></p>
+    </form>
+</body>
+</html>

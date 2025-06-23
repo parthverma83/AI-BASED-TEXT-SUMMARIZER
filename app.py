@@ -1,18 +1,14 @@
-from flask import Flask, render_template, request
+from flask import Flask, session
+from auth import auth_bp
 
 app = Flask(__name__)
+app.secret_key = 'supersecretkey'  # Needed for session management
+app.register_blueprint(auth_bp)
+
 @app.route('/')
-def index():
-    return render_template('index.html')
+def home():
+    return "Welcome to the AI-Based Text Summarizer!"
 
-@app.route('/summarize', methods=['GET', 'POST'])
-def summarize():
-    def summarize():
-     summary = ''
-    if request.method == 'POST':
-        input_text = request.form['input_text']
-        summary = summarize_text(input_text) # Assuming summarize_text is a function that summarizes the input text
-    return render_template('index.html', summary=summary)
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
+
