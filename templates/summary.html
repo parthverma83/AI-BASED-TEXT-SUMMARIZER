@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Text Summarizer Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h2>Welcome, {{ user }}!</h2>
+    <a href="{{ url_for('auth.logout') }}">Logout</a>
+    <h3>Summarize Your Text</h3>
+    <div id="summaryBox" style="display:none;">
+        <div id="summaryText"></div>
+    </div>
+    <textarea id="inputText" rows="8" cols="80" placeholder="Paste your text here..."></textarea><br>
+    <button id="summarizeBtn">Summarize</button>
+    <h3>Your Previous Summaries</h3>
+    <ul>
+        {% for s in summaries %}
+            <li>
+                <strong>Original:</strong> {{ s[1][:100] }}...<br>
+                <strong>Summary:</strong> {{ s[2] }}<br>
+                <em>{{ s[3] }}</em>
+            </li>
+        {% else %}
+            <li>No summaries yet.</li>
+        {% endfor %}
+    </ul>
+    <script src="/static/script.js"></script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, session, url_for
-from db import get_db_connection, init_db
+from db import get_db_connection, init_db, get_summaries
 from werkzeug.security import generate_password_hash, check_password_hash
 
 auth_bp = Blueprint('auth', __name__)
@@ -53,19 +53,12 @@ def signup():
         conn.close()
     return render_template('signup.html', error=error, success=success)
 
-@auth_bp.route('/dashboard', methods=['GET', 'POST'])
+@auth_bp.route('/dashboard', methods=['GET'])
 def dashboard():
     if 'user' not in session:
         return redirect(url_for('auth.login'))
-    message = ''
-    if request.method == 'POST':
-        message = request.form.get('user_text', '')
-        if message:
-            conn = get_db_connection()
-            conn.execute('INSERT INTO messages (user_id, message) VALUES (?, ?)', (session['user_id'], message))
-            conn.commit()
-            conn.close()
-    return render_template('dashboard.html', user=session['user'], message=message)
+    summaries = get_summaries(session['user_id'])
+    return render_template('summary.html', user=session['user'], summaries=summaries)
 
 @auth_bp.route('/logout')
 def logout():
