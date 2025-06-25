@@ -1,19 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
+
 <body>
-    <h2>Login Page</h2>
-    {% if error %}
-        <p style="color:red;">{{ error }}</p>
-    {% endif %}
-    <form method="post">
-        Username: <input type="text" name="username" required><br>
-        Password: <input type="password" name="password" required><br>
-        <input type="submit" value="Login">
-        <p>If you don't have an account, <a href="{{ url_for('auth.signup') }}">Register here</a></p>
-    </form>
+    <div class="auth-bg">
+        <div class="container auth-container big-auth">
+            <h2>Login</h2>
+            {% if error %}
+            <p class="error-msg">{{ error }}</p>
+            {% endif %}
+            <form method="post">
+                <input type="text" name="username" placeholder="Username" required class="input-field"><br>
+                <input type="password" name="password" placeholder="Password" required class="input-field"><br>
+                <button type="submit">Login</button>
+            </form>
+            <p class="switch-link">If you don't have an account, <a href="{{ url_for('auth.signup') }}">Register
+                    here</a></p>
+        </div>
+    </div>
 </body>
+
 </html>
+

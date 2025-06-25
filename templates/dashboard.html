@@ -1,28 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dashboard</title>
+    <title>Text Summarizer Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
+
 <body>
-    <h1>Welcome to the AI-Based Text Summarizer Dashboard</h1>
-
-    <p>Here you can summarize your text using our AI model.</p>
-
-    {% if error %}
-        <p style="color:red;">{{ error }}</p>
-    {% endif %}
-
-    {% if success %}
-        <p style="color:green;">{{ success }}</p>
-    {% endif %}
-
-    <form method="post">
-        <label for="text">Enter text to summarize:</label><br>
-        <textarea name="text" id="text" rows="10" cols="50" required></textarea><br>
-        <input type="submit" value="Summarize">
-    </form>
-    <a href="{{ url_for('auth.logout') }}">Logout</a>
+    <div class="dashboard-bg landscape-flex">
+        <a class="logout-link top-logout" href="{{ url_for('auth.logout') }}">Logout</a>
+        <div class="dashboard-panel left-panel">
+            <h2>Welcome, {{ user }}!</h2>
+            <h3>Summarize Your Text</h3>
+            <textarea id="inputText" rows="10" cols="60" placeholder="Paste your text here..."></textarea><br>
+            <button id="summarizeBtn">Summarize</button>
+            <div id="summaryBox" class="summary-box" style="display:none;"></div>
+        </div>
+        <div class="dashboard-panel right-panel">
+            <h3>Your Previous Summaries</h3>
+            <ul class="summary-list">
+                {% for s in summaries %}
+                <li>
+                    <strong>Original:</strong> {{ s[1][:100] }}...<br>
+                    <strong>Summary:</strong> {{ s[2] }}<br>
+                </li>
+                {% else %}
+                <li>No summaries yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <script src="/static/script.js"></script>
 </body>
+
 </html>
+
