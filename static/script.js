@@ -42,7 +42,7 @@ document.getElementById('summarizeBtn').addEventListener('click', async () => {
       summaryBox.style.opacity = 1;
     }
   } catch (error) {
-    summaryBox.innerText = Network error: ${error.message};
+    summaryBox.innerText = `Network error: ${error.message}`;
     summaryBox.style.opacity = 1;
   }
 });

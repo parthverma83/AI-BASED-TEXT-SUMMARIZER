@@ -1,68 +1,224 @@
-document.addEventListener('DOMContentLoaded', ()=> {
-        const inputText=document.getElementById('inputText');
-        if (inputText) inputText.focus();
-    });
-
-document.getElementById('summarizeBtn').addEventListener('click', async ()=> {
-        const inputText=document.getElementById('inputText');
-        const summaryBox=document.getElementById('summaryBox');
-
-        summaryBox.innerText='';
-        summaryBox.style.display='none';
-
-        const text=inputText.value.trim();
-
-        if ( !text) {
-            summaryBox.innerText="Please enter text to summarize.";
-            summaryBox.style.display='block';
-            summaryBox.style.opacity=1;
-            return;
-        }
-
-        summaryBox.innerHTML='<span class="loading-spinner"></span> Summarizing... Please wait.';
-        summaryBox.style.display='block';
-        summaryBox.style.opacity=1;
-
-        try {
-            const response=await fetch('/summarize', {
-
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-
-                ,
-                body: JSON.stringify({
-                    text
-                })
-        });
-
-    const result=await response.json();
-
-    if (response.ok && result.summary) {
-        summaryBox.style.opacity=0;
-
-        setTimeout(()=> {
-                summaryBox.innerText=result.summary;
-                summaryBox.style.opacity=1;
-            }
-
-            , 200);
-        inputText.value='';
-    }
-
-    else {
-        summaryBox.innerText=result.error || "Failed to summarize text. Please try again.";
-        summaryBox.style.opacity=1;
-    }
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(to right, #c9d6ff, #e2e2e2);
+    text-align: center;
+    padding-top: 50px;
+    margin: 0;
 }
 
-catch (error) {
-    summaryBox.innerText=`Network error: $ {
-        error.message
-    }
-
-    `;
-    summaryBox.style.opacity=1;
+.dashboard-bg {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    background: linear-gradient(120deg, #c9d6ff 0%, #e2e2e2 100%);
+    position: relative;
 }
-});
+
+.dashboard-panel {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(60,60,120,0.08);
+    margin: 40px 24px;
+    padding: 36px 32px;
+    flex: 1 1 0;
+    min-width: 340px;
+    max-width: 480px;
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+.left-panel {
+    margin-right: 12px;
+}
+.right-panel {
+    margin-left: 12px;
+    background: #f8f9fa;
+}
+.summary-list {
+    list-style: none;
+    padding: 0;
+    max-height: 350px;
+    overflow-y: auto;
+    text-align: left;
+}
+.summary-list li {
+    background: #fff;
+    border-radius: 8px;
+    margin-bottom: 18px;
+    padding: 14px 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    font-size: 15px;
+}
+
+.top-logout {
+    position: absolute;
+    top: 32px;
+    right: 48px;
+    background: #ff5252;
+    color: #fff;
+    padding: 10px 22px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: background 0.2s;
+    z-index: 10;
+}
+.top-logout:hover {
+    background: #d32f2f;
+}
+
+/* Auth (login/signup) styling */
+.auth-bg {
+    min-height: 100vh;
+    background: linear-gradient(120deg, #c9d6ff 0%, #e2e2e2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.auth-container {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 32px rgba(60,60,120,0.10);
+    padding: 48px 38px 36px 38px;
+    min-width: 340px;
+    max-width: 400px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.big-auth {
+    min-width: 340px;
+    max-width: 400px;
+}
+.input-field {
+    width: 100%;
+    padding: 14px 12px;
+    margin-bottom: 18px;
+    border-radius: 8px;
+    border: 1px solid #bdbdbd;
+    font-size: 1rem;
+    background: #f7f7fa;
+    transition: border 0.2s;
+}
+.input-field:focus {
+    border: 1.5px solid #3949ab;
+    outline: none;
+    background: #fff;
+}
+button, #summarizeBtn {
+    padding: 12px 30px;
+    font-size: 18px;
+    background-color: #3949ab;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background-color 0.3s ease;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+button:hover, #summarizeBtn:hover {
+    background-color: #1a237e;
+}
+.error-msg {
+    color: #ff5252;
+    background: #ffeaea;
+    border-radius: 6px;
+    padding: 8px 0;
+    margin-bottom: 10px;
+    width: 100%;
+}
+.success-msg {
+    color: #388e3c;
+    background: #e8f5e9;
+    border-radius: 6px;
+    padding: 8px 0;
+    margin-bottom: 10px;
+    width: 100%;
+}
+.switch-link {
+    margin-top: 18px;
+    font-size: 0.98rem;
+}
+.switch-link a {
+    color: #3949ab;
+    text-decoration: underline;
+    font-weight: 500;
+}
+.switch-link a:hover {
+    color: #1a237e;
+}
+
+/* Summary section styling */
+#summary, #summaryBox {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f1f1f1;
+    border-radius: 10px;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    font-style: italic;
+    font-size: 18px;
+    color: #333;
+    opacity: 0;
+    transition: opacity 0.3s;
+    display: none;
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 3px solid #007bff;
+    border-top: 3px solid #f4f4f4;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+    .dashboard-bg {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .dashboard-panel {
+        margin: 24px auto;
+        min-width: 90vw;
+        max-width: 98vw;
+    }
+    .top-logout {
+        right: 24px;
+        top: 18px;
+    }
+}
+@media (max-width: 600px) {
+    textarea, #inputText, #summary, #summaryBox {
+        width: 95%;
+    }
+    .dashboard-panel {
+        padding: 18px 6px;
+    }
+    h1 {
+        font-size: 36px;
+    }
+    h2 {
+        font-size: 24px;
+    }
+    .auth-container {
+        padding: 24px 6px 18px 6px;
+    }
+}

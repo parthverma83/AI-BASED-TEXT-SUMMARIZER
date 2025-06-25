@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, session, url_for
+from flask import  Blueprint, app, render_template, request, redirect, session, url_for
 from db import get_db_connection, init_db, get_summaries
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -58,7 +58,7 @@ def dashboard():
     if 'user' not in session:
         return redirect(url_for('auth.login'))
     summaries = get_summaries(session['user_id'])
-    return render_template('summary.html', user=session['user'], summaries=summaries)
+    return render_template('dashboard.html', user=session['user'], summaries=summaries)
 
 @auth_bp.route('/logout')
 def logout():
