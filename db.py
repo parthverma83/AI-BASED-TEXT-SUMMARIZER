@@ -1,68 +1,52 @@
-import sqlite3
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 from werkzeug.security import generate_password_hash, check_password_hash
+from model import Base, User, Summary
 
-DB_NAME = 'database.db'
+DB_NAME = 'sqlite:///database.db'
+engine = create_engine(DB_NAME, echo=False, connect_args={"check_same_thread": False})
+SessionLocal = sessionmaker(bind=engine)
+
 
 def init_db():
-    conn = sqlite3.connect(DB_NAME)
-    c = conn.cursor()
-    # Create users table
-    c.execute('''CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL
-    )''')
-    # Create summaries table
-    c.execute('''CREATE TABLE IF NOT EXISTS summaries (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER NOT NULL,
-        original_text TEXT NOT NULL,
-        summary TEXT NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY(user_id) REFERENCES users(id)
-    )''')
-    conn.commit()
-    conn.close()
+    Base.metadata.create_all(bind=engine)
 
-def register_user(username, password):
-    conn = sqlite3.connect(DB_NAME)
-    c = conn.cursor()
+def register_user(username, email, password):
+    session = SessionLocal()
     hashed_password = generate_password_hash(password)
+    user = User(username=username, email=email, password=hashed_password)
     try:
-        c.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, hashed_password))
-        conn.commit()
+        session.add(user)
+        session.commit()
         return True
-    except sqlite3.IntegrityError:
+    except Exception:
+        session.rollback()
         return False
     finally:
-        conn.close()
+        session.close()
 
 def authenticate_user(username, password):
-    conn = sqlite3.connect(DB_NAME)
-    c = conn.cursor()
-    c.execute('SELECT id, password FROM users WHERE username = ?', (username,))
-    user = c.fetchone()
-    conn.close()
-    if user and check_password_hash(user[1], password):
-        return user[0]  # return user id
+    session = SessionLocal()
+    user = session.query(User).filter_by(username=username).first()
+    session.close()
+    if user and check_password_hash(user.password, password):
+        return user.id
     return None
 
 def save_summary(user_id, original_text, summary):
-    conn = sqlite3.connect(DB_NAME)
-    c = conn.cursor()
-    c.execute('INSERT INTO summaries (user_id, original_text, summary) VALUES (?, ?, ?)',
-              (user_id, original_text, summary))
-    conn.commit()
-    conn.close()
+    session = SessionLocal()
+    summary_obj = Summary(user_id=user_id, original_text=original_text, summary=summary)
+    session.add(summary_obj)
+    session.commit()
+    session.close()
 
 def get_summaries(user_id):
-    conn = sqlite3.connect(DB_NAME)
-    c = conn.cursor()
-    c.execute('SELECT id, original_text, summary, created_at FROM summaries WHERE user_id = ? ORDER BY created_at DESC', (user_id,))
-    summaries = c.fetchall()
-    conn.close()
-    return summaries
+    session = SessionLocal()
+    summaries = session.query(Summary).filter_by(user_id=user_id).order_by(Summary.created_at.desc()).all()
+    result = [(s.id, s.original_text, s.summary, s.created_at) for s in summaries]
+    session.close()
+    return result
 
 def get_db_connection():
-    """Return a new connection to the SQLite database."""
-    return sqlite3.connect(DB_NAME)
+    """Return a new SQLAlchemy session."""
+    return SessionLocal()

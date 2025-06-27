@@ -1,4 +1,4 @@
-from flask import Flask, session, request, jsonify
+from flask import Flask, session, request, jsonify, redirect
 from auth import auth_bp
 from summarizer import summarize_text
 from db import save_summary
@@ -9,7 +9,9 @@ app.register_blueprint(auth_bp)
 
 @app.route('/')
 def home():
-    return "Welcome to the AI-Based Text Summarizer!"
+    if session.get('user_id'):
+        return redirect('/dashboard')
+    return redirect('/login')
 
 @app.route('/summarize', methods=['POST'])
 def summarize_api():

@@ -2,3 +2,7 @@ streamlit==1.34.0
 transformers==4.41.1
 torch>=2.0.0
 sentencepiece
+sqlalchemy
+werkzeug
+flask
+
