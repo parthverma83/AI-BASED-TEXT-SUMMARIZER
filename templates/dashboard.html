@@ -8,16 +8,18 @@
 </head>
 
 <body>
-    <div class="dashboard-bg landscape-flex">
-        <a class="logout-link top-logout" href="{{ url_for('auth.logout') }}">Logout</a>
-        <div class="dashboard-panel left-panel">
+    <a href="{{ url_for('auth.logout') }}" class="top-logout">Logout</a>
+    <h1 class="dashboard-title">AI Text Summarizer</h1>
+    <div class="dashboard-bg landscape-flex dashboard-center">
+        <div class="dashboard-panel left-panel dashboard-card">
             <h2>Welcome, {{ user }}!</h2>
             <h3>Summarize Your Text</h3>
             <textarea id="inputText" rows="10" cols="60" placeholder="Paste your text here..."></textarea><br>
             <button id="summarizeBtn">Summarize</button>
             <div id="summaryBox" class="summary-box" style="display:none;"></div>
+            <button id="copyBtn" class="copy-btn" style="display:none; margin-top:10px;">Copy Summary</button>
         </div>
-        <div class="dashboard-panel right-panel">
+        <div class="dashboard-panel right-panel dashboard-card">
             <h3>Your Previous Summaries</h3>
             <ul class="summary-list">
                 {% for s in summaries %}
@@ -32,6 +34,54 @@
         </div>
     </div>
     <script src="/static/script.js"></script>
+    <footer class="footer">
+        <div class="footer-content footer-flex">
+            <div class="footer-col footer-about">
+                <div class="footer-title">About</div>
+                <div class="footer-section">
+                    <p class="footer-desc">
+                        This web app is a simple AI-based text summarizer built using Python and Flask. You can paste any long text, and it will generate a short summary to help you understand it faster.<br><br>
+                        It's a mini project created for learning and exploring web development and machine learning.
+                    </p>
+                </div>
+            </div>
+            <div class="footer-col footer-feedback">
+                <div class="footer-title">Feedback</div>
+                <div class="footer-section">
+                    {% if request.args.get('thanks') %}
+                        <div class="success-msg" style="margin-bottom:0;">Thank you for your feedback!</div>
+                    {% else %}
+                    <form action="/feedback" method="post" class="feedback-form" id="feedbackForm">
+                        <textarea name="feedback" class="input-field feedback-box" rows="2" placeholder="Your feedback..." required></textarea><br>
+                        <button type="submit" class="copy-btn feedback-btn">Submit Feedback</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="footer-col footer-contact">
+                <div class="footer-title">Contact</div>
+                <div class="footer-section">
+                    <p>Created by Group 63</p>
+                    <p>
+                        <a href="mailto:group63.capstone@gmail.com" class="email-link" aria-label="Email" style="text-decoration:none; color:#222;">
+                            <svg height="22" width="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><rect x="2" y="4" width="20" height="16" rx="4"/><polyline points="22,6 12,13 2,6"/></svg>
+                            <span style="margin-left:6px;vertical-align:middle;">group63.capstone@gmail.com</span>
+                        </a>
+                    </p>
+                    <p>
+                        <a href="https://github.com/parthverma83/AI-BASED-TEXT-SUMMARIZER" target="_blank" class="github-link" aria-label="GitHub">
+                            <svg height="24" width="24" viewBox="0 0 16 16" fill="#222" style="vertical-align:middle;"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.01.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.11.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.19 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg>
+                            <span style="margin-left:6px;vertical-align:middle;">GitHub</span>
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2025 Text Summarizer. All rights reserved.<br>
+            <span style="font-size:1.1em;">Made with <span style="color:#e25555;">&#10084;&#65039;</span></span>
+        </div>
+    </footer>
 </body>
 
 </html>

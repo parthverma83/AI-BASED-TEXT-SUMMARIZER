@@ -10,6 +10,7 @@ class User(Base):
     email = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
     summaries = relationship('Summary', back_populates='user')
+    feedbacks = relationship('Feedback', back_populates='user')
 
 class Summary(Base):
     __tablename__ = 'summaries'
@@ -19,3 +20,11 @@ class Summary(Base):
     summary = Column(Text, nullable=False)
     created_at = Column(TIMESTAMP, server_default=func.current_timestamp())
     user = relationship('User', back_populates='summaries')
+
+class Feedback(Base):
+    __tablename__ = 'feedbacks'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=True)
+    feedback = Column(Text, nullable=False)
+    created_at = Column(TIMESTAMP, server_default=func.current_timestamp())
+    user = relationship('User', back_populates='feedbacks')

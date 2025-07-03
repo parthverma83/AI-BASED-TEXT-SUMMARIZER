@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from werkzeug.security import generate_password_hash, check_password_hash
-from model import Base, User, Summary
+from model import Base, User, Summary, Feedback
 
 DB_NAME = 'sqlite:///database.db'
 engine = create_engine(DB_NAME, echo=False, connect_args={"check_same_thread": False})
@@ -46,6 +46,13 @@ def get_summaries(user_id):
     result = [(s.id, s.original_text, s.summary, s.created_at) for s in summaries]
     session.close()
     return result
+
+def save_feedback(user_id, feedback):
+    session = SessionLocal()
+    feedback_obj = Feedback(user_id=user_id, feedback=feedback)
+    session.add(feedback_obj)
+    session.commit()
+    session.close()
 
 def get_db_connection():
     """Return a new SQLAlchemy session."""
