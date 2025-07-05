@@ -9,10 +9,11 @@ def login():
     if request.method == 'POST':
         username = request.form['username'].strip()
         password = request.form['password']
-        user_id = authenticate_user(username, password)
-        if user_id:
-            session['user_id'] = user_id
+        user_ok = authenticate_user(username, password)
+        if user_ok:
+            session['user_id'] = user_ok
             session['username'] = username
+            session['password'] = password
             return redirect(url_for('auth.dashboard'))
         else:
             error = 'Invalid username or password.'
@@ -29,7 +30,7 @@ def signup():
         if register_user(username, email, password):
             success = 'Registration successful! Please log in.'
         else:
-            error = f"Username '{username}' or email '{email}' already exists or registration failed."
+            error = "Username or email already exists."
     return render_template('signup.html', error=error, success=success)
 
 @auth_bp.route('/logout')
