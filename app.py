@@ -22,7 +22,7 @@ def summarize_api():
     if not text:
         return jsonify({'error': 'No text provided'}), 400  # Bad request
     try:
-        summary = summarize_text(text)  # Generating summary using NLP model
+        summary = summarize_text(text)  # Generating the summary using NLP model
         save_summary(session['user_id'], text, summary) # Saving to database
         return jsonify({'summary': summary})  # Return summary to client
     except Exception as e:
