@@ -10,6 +10,7 @@
 <body>
     <div class="auth-bg">
         <div class="container auth-container big-auth">
+            <h1 class="app-title">Text Summarizer</h1>
             <h2>Sign Up</h2>
             {% if error %}
             <p class="error-msg">{{ error }}</p>
@@ -19,12 +20,15 @@
             {% endif %}
             <form method="post">
                 <input type="text" name="username" placeholder="Username" required class="input-field"><br>
+                <input type="email" name="email" placeholder="Email" required class="input-field"><br>
                 <input type="password" name="password" placeholder="Password" required class="input-field"><br>
                 <button type="submit">Sign Up</button>
             </form>
-            <p class="switch-link">Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a></p>
+            <p class="switch-link">Already have an account? <a class="register-link"
+                    href="{{ url_for('auth.login') }}">Login here</a></p>
         </div>
     </div>
+    <!-- No password toggle script needed -->
 </body>
 
 </html>

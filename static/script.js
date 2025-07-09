@@ -1,14 +1,30 @@
 document.addEventListener('DOMContentLoaded', () => {
   const inputText = document.getElementById('inputText');
   if (inputText) inputText.focus();
+
+  const copyBtn = document.getElementById('copyBtn');
+  const summaryBox = document.getElementById('summaryBox');
+  if (copyBtn && summaryBox) {
+    copyBtn.addEventListener('click', () => {
+      const text = summaryBox.innerText;
+      if (text) {
+        navigator.clipboard.writeText(text).then(() => {
+          copyBtn.innerText = 'Copied!';
+          setTimeout(() => { copyBtn.innerText = 'Copy Summary'; }, 1200);
+        });
+      }
+    });
+  }
 });
 
 document.getElementById('summarizeBtn').addEventListener('click', async () => {
   const inputText = document.getElementById('inputText');
   const summaryBox = document.getElementById('summaryBox');
+  const copyBtn = document.getElementById('copyBtn');
 
   summaryBox.innerText = '';
   summaryBox.style.display = 'none';
+  if (copyBtn) copyBtn.style.display = 'none';
 
   const text = inputText.value.trim();
   if (!text) {
@@ -35,14 +51,17 @@ document.getElementById('summarizeBtn').addEventListener('click', async () => {
       setTimeout(() => {
         summaryBox.innerText = result.summary;
         summaryBox.style.opacity = 1;
+        if (copyBtn) copyBtn.style.display = 'inline-block';
       }, 200);
       inputText.value = '';
     } else {
       summaryBox.innerText = result.error || "Failed to summarize text. Please try again.";
       summaryBox.style.opacity = 1;
+      if (copyBtn) copyBtn.style.display = 'none';
     }
   } catch (error) {
     summaryBox.innerText = `Network error: ${error.message}`;
     summaryBox.style.opacity = 1;
+    if (copyBtn) copyBtn.style.display = 'none';
   }
 });
