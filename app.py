@@ -4,7 +4,7 @@ from summarizer import summarize_text
 from db import save_summary, save_feedback
 
 app = Flask(__name__)
-app.secret_key = 'supersecretkey'  # Needed for session management
+app.secret_key = 'supersecretkey' 
 app.register_blueprint(auth_bp)
 
 @app.route('/')
@@ -16,17 +16,17 @@ def home():
 @app.route('/summarize', methods=['POST'])
 def summarize_api():
     if not session.get('user_id'):
-        return jsonify({'error': 'Unauthorized'}), 401   # Unauthorized access
+        return jsonify({'error': 'Unauthorized'}), 401   
     data = request.get_json()
     text = data.get('text', '').strip()
     if not text:
-        return jsonify({'error': 'No text provided'}), 400  # Bad request
+        return jsonify({'error': 'No text provided'}), 400  
     try:
-        summary = summarize_text(text)  # Generating the summary using NLP model
-        save_summary(session['user_id'], text, summary) # Saving to database
-        return jsonify({'summary': summary})  # Return summary to client
+        summary = summarize_text(text)  
+        save_summary(session['user_id'], text, summary) 
+        return jsonify({'summary': summary})  
     except Exception as e:
-        return jsonify({'error': str(e)}), 500   # Internal server error
+        return jsonify({'error': str(e)}), 500  
 
 @app.route('/feedback', methods=['POST'])
 def feedback_api():
@@ -35,7 +35,7 @@ def feedback_api():
     if not feedback:
         return redirect(request.referrer or '/')
     save_feedback(user_id, feedback)
-    # Redirect with thank you message
+   
     return redirect(url_for('auth.dashboard', thanks=1))
 
 if __name__ == "__main__":
